@@ -153,6 +153,7 @@ const TransactionDisplay = (props) => {
   }
 
   const onCloseArrowClick = () => {
+    console.log('removing coin here...')
     callRemoveCoin(props.shared_key_id)
     props.parent_setState({})
   }

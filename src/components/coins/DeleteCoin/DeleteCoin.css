@@ -1,0 +1,13 @@
+.wrapper {
+    position: relative;
+    display: inline-block;
+}
+.close:before {
+    content: '✕';
+}
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+}

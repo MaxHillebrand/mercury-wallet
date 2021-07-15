@@ -36,6 +36,7 @@ import SwapStatus from "./SwapStatus/SwapStatus";
 import './coins.css';
 import '../index.css';
 import CoinDescription from "../inputs/CoinDescription/CoinDescription";
+import DeleteCoin from "./DeleteCoin/DeleteCoin";
 
 const TESTING_MODE = require("../../settings.json").testing_mode;
 
@@ -347,6 +348,7 @@ const Coins = (props) => {
               }}
             >
                 <div className="CoinPanel">
+                  <DeleteCoin shared_key_id={item.shared_key_id}></DeleteCoin>
                   <div className="CoinAmount-block">
                       <img src={item.privacy_data.icon1} alt="icon"/>
                       <span className="sub">
@@ -384,6 +386,7 @@ const Coins = (props) => {
                                   key={1}/>
                             </ProgressBar>
                         </div>
+                        
                         <div className="CoinTimeLeft">
                             <img src={timeIcon} alt="icon" />
                             <span>
