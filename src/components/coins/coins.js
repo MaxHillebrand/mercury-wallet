@@ -14,6 +14,10 @@ import timeIcon from "../../images/time.png";
 import copy_img from "../../images/icon2.png";
 import descripIcon from "../../images/description.png"
 
+// temp
+import close_img from "../../images/close-icon.png";
+import './DeleteCoin/DeleteCoin.css'
+
 
 import React, {useState, useEffect } from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar';
@@ -22,8 +26,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import Moment from 'react-moment';
 
 import {MINIMUM_DEPOSIT_SATOSHI, fromSatoshi} from '../../wallet/util'
-import {callGetUnspentStatecoins, callGetBlockHeight, updateBalanceInfo, callGetUnconfirmedStatecoinsDisplayData,callGetUnconfirmedAndUnmindeCoinsFundingTxData, setError,callAddDescription,callGetStateCoin} from '../../features/WalletDataSlice'
-
+import {callRemoveCoin, callGetUnspentStatecoins, callGetBlockHeight, updateBalanceInfo, callGetUnconfirmedStatecoinsDisplayData,callGetUnconfirmedAndUnmindeCoinsFundingTxData, setError,callAddDescription,callGetStateCoin} from '../../features/WalletDataSlice'
 import SortBy from './SortBy/SortBy'
 import FilterBy from './FilterBy/FilterBy'
 import { STATECOIN_STATUS } from '../../wallet/statecoin'
@@ -39,6 +42,9 @@ import CoinDescription from "../inputs/CoinDescription/CoinDescription";
 import DeleteCoin from "./DeleteCoin/DeleteCoin";
 
 const TESTING_MODE = require("../../settings.json").testing_mode;
+
+
+let deletecoinShow = false;
 
 const DEFAULT_STATE_COIN_DETAILS = {show: false, coin: {value: 0, expiry_data: {blocks: "", months: "", days: ""}, privacy_data: {score_desc: ""}}}
 // privacy score considered "low"
@@ -66,38 +72,36 @@ const SWAP_STATUS_INFO = {
 
 const Coins = (props) => {
     const dispatch = useDispatch();
+    const [sharedKeyId, setSharedKeyId] = useState(null);
     const { filterBy } = useSelector(state => state.walletData);
   	const [sortCoin, setSortCoin] = useState(INITIAL_SORT_BY);
     const [coins, setCoins] = useState(INITIAL_COINS);
     const [initCoins, setInitCoins] = useState({})
+    const [showDeleteCoinDetails, setShowDeleteCoinDetails] = useState(false);
     const [showCoinDetails, setShowCoinDetails] = useState(DEFAULT_STATE_COIN_DETAILS);  // Display details of Coin in Modal
     const [refreshCoins, setRefreshCoins] = useState(false);
-    
     const [description,setDescription] = useState("")
     const [dscpnConfirm,setDscrpnConfirm] = useState(false)
-
     const [swapStatus,setSwapStatus] = useState("")
-
     let all_coins_data = [...coins.unspentCoins, ...coins.unConfirmedCoins];
 
-
     const handleOpenCoinDetails = (shared_key_id) => {
-        let coin = all_coins_data.find((coin) => {
-            return coin.shared_key_id === shared_key_id
-        })
-        coin.privacy_data = getPrivacyScoreDesc(coin.swap_rounds);
-        setShowCoinDetails({show: true, coin: coin});
+      let coin = all_coins_data.find((coin) => {
+          return coin.shared_key_id === shared_key_id;
+      })
+      coin.privacy_data = getPrivacyScoreDesc(coin.swap_rounds);
+      setShowCoinDetails({show: true, coin: coin});
     }
 
     const handleSetCoinDetails = (shared_key_id) => {
-        let coin = all_coins_data.find((coin) => {
-            return coin.shared_key_id === shared_key_id
-        })
-        coin.privacy_data = getPrivacyScoreDesc(coin.swap_rounds);
-        props.setCoinDetails(coin)
+      let coin = all_coins_data.find((coin) => {
+          return coin.shared_key_id === shared_key_id;
+      })
+      coin.privacy_data = getPrivacyScoreDesc(coin.swap_rounds);
+      props.setCoinDetails(coin);
     }
 
-    function handleCloseCoinDetails (){
+    const handleCloseCoinDetails = () => {
         props.setSelectedCoins([]);
         setShowCoinDetails(DEFAULT_STATE_COIN_DETAILS);
     }
@@ -119,19 +123,19 @@ const Coins = (props) => {
     }
 
     const isSelected = (shared_key_id) => {
-        let selected = false;
-        if(props.selectedCoins == undefined) {
-          selected = (props.selectedCoin == shared_key_id)
-        } else {
-            props.selectedCoins.forEach(
-              (selectedCoin) =>  {
-                if (selectedCoin === shared_key_id) {
-                  selected = true;
-                } 
-              }
-            );
-        }
-        return selected;
+      let selected = false;
+      if(props.selectedCoins == undefined) {
+        selected = (props.selectedCoin == shared_key_id)
+      } else {
+          props.selectedCoins.forEach(
+            (selectedCoin) =>  {
+              if (selectedCoin === shared_key_id) {
+                selected = true;
+              } 
+            }
+          );
+      }
+      return selected;
     }
 
     const displayExpiryTime = (expiry_data, show_days=false) => {
@@ -322,11 +326,29 @@ const Coins = (props) => {
   		return 0;
   	});
 
+    const onDeleteCoinDetails = (shared_key_id) => {
+      setSharedKeyId(shared_key_id);
+      setShowDeleteCoinDetails(true);
+    }
+
+    const handleDeleteCoinYes = (shared_key_id) => {
+      callRemoveCoin(shared_key_id);
+      setShowDeleteCoinDetails(false);
+    }
+
+    const handleDeleteCoinNo = () => {
+      setShowDeleteCoinDetails(false);
+    }
+
 
     const statecoinData = all_coins_data.map(item => {
       item.privacy_data = getPrivacyScoreDesc(item.swap_rounds);
       return (
           <div key={item.shared_key_id}>
+            <p>{JSON.stringify(item)}</p>
+            <div className="CoinTitleBar">
+              <img className='close' src={close_img} alt="arrow" onClick={() => onDeleteCoinDetails(item.shared_key_id)}/>
+            </div>
             <div
               className={`coin-item ${props.swap ? item.status : ''} ${isSelected(item.shared_key_id) ? 'selected' : ''}`}
               onClick={() => {
@@ -348,7 +370,6 @@ const Coins = (props) => {
               }}
             >
                 <div className="CoinPanel">
-                  <DeleteCoin shared_key_id={item.shared_key_id}></DeleteCoin>
                   <div className="CoinAmount-block">
                       <img src={item.privacy_data.icon1} alt="icon"/>
                       <span className="sub">
@@ -638,6 +659,32 @@ const Coins = (props) => {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <Modal
+                show={showDeleteCoinDetails}
+                onHide={handleCloseCoinDetails}
+                className="modal coin-details-modal"
+              >
+                <Modal.Body>
+                  <div>
+                    Are you sure you want to delete this coin?
+                  </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button
+                      className="primary-btn ghost"
+                      onClick={() => handleDeleteCoinYes(sharedKeyId)}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      className="primary-btn ghost"
+                      onClick={handleDeleteCoinNo}
+                    >
+                      No
+                    </Button>
+                  </Modal.Footer>
+              </Modal>
       </div>
     );
 }
