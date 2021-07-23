@@ -72,7 +72,7 @@ const SWAP_STATUS_INFO = {
 
 const Coins = (props) => {
     const dispatch = useDispatch();
-    const [sharedKeyId, setSharedKeyId] = useState(null);
+    const [currentItem, setCurrentItem] = useState(null);
     const { filterBy } = useSelector(state => state.walletData);
   	const [sortCoin, setSortCoin] = useState(INITIAL_SORT_BY);
     const [coins, setCoins] = useState(INITIAL_COINS);
@@ -326,13 +326,16 @@ const Coins = (props) => {
   		return 0;
   	});
 
-    const onDeleteCoinDetails = (shared_key_id) => {
-      setSharedKeyId(shared_key_id);
+    const onDeleteCoinDetails = (item) => {
+      setCurrentItem(item);
       setShowDeleteCoinDetails(true);
     }
 
-    const handleDeleteCoinYes = (shared_key_id) => {
-      callRemoveCoin(shared_key_id);
+    const handleDeleteCoinYes = (item) => {
+      item.status = "DELETED";
+      item.deleting = true;
+      item.privacy_data.msg = 'coin currently being deleted';
+      callRemoveCoin(item.shared_key_id);
       setShowDeleteCoinDetails(false);
     }
 
@@ -345,10 +348,11 @@ const Coins = (props) => {
       item.privacy_data = getPrivacyScoreDesc(item.swap_rounds);
       return (
           <div key={item.shared_key_id}>
-            <p>{JSON.stringify(item)}</p>
-            <div className="CoinTitleBar">
-              <img className='close' src={close_img} alt="arrow" onClick={() => onDeleteCoinDetails(item.shared_key_id)}/>
-            </div>
+           
+            {!item.deleting && item.status === "INITIALISED" && <div className="CoinTitleBar">
+              <img className='close' src={close_img} alt="arrow" onClick={() => onDeleteCoinDetails(item)}/>
+            </div>}
+
             <div
               className={`coin-item ${props.swap ? item.status : ''} ${isSelected(item.shared_key_id) ? 'selected' : ''}`}
               onClick={() => {
@@ -673,7 +677,7 @@ const Coins = (props) => {
                   <Modal.Footer>
                     <Button
                       className="primary-btn ghost"
-                      onClick={() => handleDeleteCoinYes(sharedKeyId)}
+                      onClick={() => handleDeleteCoinYes(currentItem)}
                     >
                       Yes
                     </Button>
