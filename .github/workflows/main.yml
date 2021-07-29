@@ -6,13 +6,18 @@ on:
     #branches: [ main ]
 
 jobs:
-  e2e-macos:
-    runs-on: macos-latest-sip-disabled
+  e2e-linux:
+    runs-on: ubuntu-latest
+    container: magnitus/electron-app
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
+      - name: Add Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.15.1'
       - run: yarn install
-      - run: yarn run e2e-macos
+      - run: yarn run e2e-linux
 
   test:
     runs-on: ubuntu-latest
