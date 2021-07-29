@@ -8,7 +8,8 @@ on:
 jobs:
   e2e-linux:
     runs-on: ubuntu-latest
-    container: magnitus/electron-app
+    container:
+      image: electronuserland/builder:wine
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
@@ -17,63 +18,19 @@ jobs:
         with:
           node-version: '14'
       - run: yarn install
-      - run: yarn run e2e-linux
-
-  test:
-    runs-on: ubuntu-latest
+      # - run: yarn run e2e-linux
+      # will not run see: ERROR Your Linux version does not have a graphic subsystem to run electron:. 
+      # with a GUI. You can launch the browser in headless mode. If you use a portable browser executable,
+      # specify the browser alias before the path instead of the 'path' prefix. 
+      # For more information, see https://testcafe.io/documentation/402828/guides/concepts/browsers#test-in-headless-mode  
+  e2e-macos:
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Test using Node.js
+      - name: Check out the repository
+        uses: actions/checkout@v2
+      - name: Add Node
         uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - run: sed -i -e 's/false/true/g' src/settings.json 
       - run: yarn install
-      - run: yarn test
-
-  linux-win:
-    runs-on: ubuntu-latest
-    container:
-      image: electronuserland/builder:wine
-    steps:
-      - name: Checkout git repository
-        uses: actions/checkout@v2
-
-      - name: build
-        env:
-          CI: false
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          pwd
-          id
-          yarn app-linux
-          echo "finished linux"
-          chown -R root:root /github/home
-          yarn app-windows
-          echo "finished windows"
-          ls -la dist
-  macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout git repository
-        uses: actions/checkout@v2
-        
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-          
-      - name: build
-        env:
-          CI: false
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CSC_LINK: ${{ secrets.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          API_KEY_ID: ${{ secrets.API_KEY_ID }}
-          API_KEY_ISSUER_ID: ${{ secrets.API_KEY_ISSUER_ID }}
-        run: |
-          mkdir -p ~/private_keys/
-          echo '${{ secrets.API_KEY }}' > ~/private_keys/AuthKey_${{ secrets.API_KEY_ID }}.p8
-          yarn config set network-timeout 300000
-          yarn app-macos
-          ls -la dist
+      - run: yarn run e2e-macos
