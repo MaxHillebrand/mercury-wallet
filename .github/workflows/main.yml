@@ -7,7 +7,7 @@ on:
 
 jobs:
   e2e-macos:
-    runs-on: macos-latest
+    runs-on: macos-latest-sip-disabled
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
