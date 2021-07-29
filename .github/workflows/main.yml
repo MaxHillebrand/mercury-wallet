@@ -6,6 +6,18 @@ on:
     #branches: [ main ]
 
 jobs:
+  e2e-linux:
+    runs-on: ubuntu-latest
+    steps:
+      -run: yarn install
+      -run: yarn run e2e-linux
+
+  e2e-macos:
+    runs-on: macos-latest
+    steps:
+      -run: yarn install
+      -run: yarn run e2e-macos
+
   test:
     runs-on: ubuntu-latest
     steps:
