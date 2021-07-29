@@ -7,13 +7,12 @@ on:
 
 jobs:
   e2e-linux:
-    name:  Run TestCafe Tests
+    name:  e2e-linux
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
-      - name: Run tests
-        uses: DevExpress/testcafe-action@latest
+      - name: Run test
       - run: yarn install
       - run: yarn run e2e-linux
 
