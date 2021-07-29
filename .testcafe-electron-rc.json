@@ -1,4 +1,5 @@
 {
     "mainWindowUrl": "./build/index.html",
-    "appPath": "./"
+    "appPath": "./",
+    "appArgs": "--no-sandbox"
 }
