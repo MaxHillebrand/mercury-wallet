@@ -6,14 +6,13 @@ on:
     #branches: [ main ]
 
 jobs:
-  e2e-linux:
-    runs-on: ubuntu-latest
-    container: magnitus/electron-app:node12.13.0-chrome78-ff70
+  e2e-macos:
+    runs-on: macos-latest
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
       - run: yarn install
-      - run: yarn run e2e-linux
+      - run: yarn run e2e-macos
 
   test:
     runs-on: ubuntu-latest
