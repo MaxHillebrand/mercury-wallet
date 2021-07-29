@@ -10,12 +10,12 @@ jobs:
     name:  Run TestCafe Tests
     runs-on: ubuntu-latest
     steps:
-      -name: Check out the repository
+      - name: Check out the repository
        uses: actions/checkout@v2
-      -name: Run tests
+      - name: Run tests
        uses: DevExpress/testcafe-action@latest
-      -run: yarn install
-      -run: yarn run e2e-linux
+      - run: yarn install
+      - run: yarn run e2e-linux
 
   test:
     runs-on: ubuntu-latest
