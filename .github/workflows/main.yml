@@ -20,11 +20,7 @@ jobs:
   e2e-linux:
     runs-on: ubuntu-latest
     container:
-<<<<<<< HEAD
       image: x11docker/mate
-=======
-      image: electronuserland/builder:wine
->>>>>>> 709bc3844d72b2152505b1260999f8d2645cc58b
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
