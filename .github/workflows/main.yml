@@ -8,8 +8,7 @@ on:
 jobs:
   e2e-linux:
     runs-on: ubuntu-latest
-    container: 
-      image: x11vnc/desktop
+    container: magnitus/electron-app:node12.13.0-chrome78-ff70
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
