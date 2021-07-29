@@ -7,16 +7,15 @@ on:
 
 jobs:
   e2e-linux:
+    name:  Run TestCafe Tests
     runs-on: ubuntu-latest
     steps:
+      -name: Check out the repository
+       uses: actions/checkout@v2
+      -name: Run tests
+       uses: DevExpress/testcafe-action@latest
       -run: yarn install
       -run: yarn run e2e-linux
-
-  e2e-macos:
-    runs-on: macos-latest
-    steps:
-      -run: yarn install
-      -run: yarn run e2e-macos
 
   test:
     runs-on: ubuntu-latest
