@@ -1,4 +1,7 @@
 const electron = require('electron');
+
+app.commandLine.appendSwitch('— ignore-gpu-blacklist')
+
 const path = require('path');
 const url = require('url');
 
@@ -21,7 +24,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       backgroundThrottling: false
-    }
+    },
+    show: false
   });
     // Open the DevTools.
    mainWindow.webContents.openDevTools()
