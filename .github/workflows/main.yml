@@ -8,8 +8,7 @@ on:
 jobs:
   e2e-linux:
     runs-on: ubuntu-latest
-    container:
-      image: testcafe/testcafe
+    container: eoskin/electron-release-server
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
