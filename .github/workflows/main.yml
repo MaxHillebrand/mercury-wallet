@@ -8,7 +8,6 @@ on:
 jobs:
   e2e-linux:
     runs-on: ubuntu-latest
-    container: eoskin/electron-release-server
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
@@ -16,8 +15,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14'
-      - run: npm install
-      - run: npm run e2e-macos
+      - run: yarn install
+      - run: yarn run e2e-macos
       # will not run see: ERROR Your Linux version does not have a graphic subsystem to run electron:. 
       # with a GUI. You can launch the browser in headless mode. If you use a portable browser executable,
       # specify the browser alias before the path instead of the 'path' prefix. 
