@@ -24,13 +24,13 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       backgroundThrottling: false
-    },
-    show: false
+    }
   });
     // Open the DevTools.
-   mainWindow.webContents.openDevTools()
+   //mainWindow.webContents.openDevTools()
 
   // and load the index.html of the app.
+  
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, 'index.html'),
@@ -47,6 +47,9 @@ function createWindow() {
     mainWindow = null;
   });
 }
+
+app.disableHardwareAcceleration();
+app.commandLine.appendSwitch("disable-software-rasterizer");
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

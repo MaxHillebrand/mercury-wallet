@@ -8,6 +8,8 @@ on:
 jobs:
   e2e-linux:
     runs-on: ubuntu-latest
+    container:
+      - image: electronjs/build
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
@@ -16,10 +18,7 @@ jobs:
         with:
           node-version: '14'
       - run: yarn install
-      - name: Run testcafe tests
-        - uses: DevExpress/testcafe-action@latest
-        with:
-          args: "chrome src/e2e/e2e-macos.js"
+      - run: yarn run e2e-macos
       # will not run see: ERROR Your Linux version does not have a graphic subsystem to run electron:. 
       # with a GUI. You can launch the browser in headless mode. If you use a portable browser executable,
       # specify the browser alias before the path instead of the 'path' prefix. 
