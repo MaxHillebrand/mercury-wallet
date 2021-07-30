@@ -9,7 +9,7 @@ jobs:
   e2e-linux:
     runs-on: ubuntu-latest
     container:
-      image: armakuni/testcafe
+      image: testcafe/testcafe
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
