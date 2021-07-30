@@ -31,7 +31,7 @@
   "homepage": "./",
   "main": "src/electron-starter.js",
   "scripts": {
-    "e2e-macos": "testcafe \"electron:.\" \"./src/e2e/e2e-macos.test.js\"",
+    "e2e-macos": "testcafe \"chrome:headless\" \"./src/e2e/e2e-macos.test.js\"",
     "e2e-linux": "testcafe \"electron:.\" \"./src/e2e/e2e-linux.test.js\"",
     "install-local": "yarn add file:./tor-adapter",
     "start": "react-app-rewired start",
