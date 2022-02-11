@@ -258,6 +258,7 @@ describe('full swap test 1 - correct swap', () => {
 
         http_mock.post = jest
             .fn()
+            // phase0
             .mockImplementationOnce((path, body) => {
                 if (path === POST_ROUTE.SWAP_REGISTER_UTXO) {
                     // do nothing
@@ -268,6 +269,7 @@ describe('full swap test 1 - correct swap', () => {
                     return final_statecoin.swap_id
                 }
             })
+            // phase1
             .mockImplementationOnce((path, body) => {
                 if (path === POST_ROUTE.SWAP_POLL_UTXO) {
                     return final_statecoin.swap_id
@@ -335,12 +337,18 @@ describe('full swap test 1 - correct swap', () => {
                     return MOCK_SERVER.TRANSFER_PUBKEY;
                 }
             })
+            .mockImplementationOnce((path, body) => {
+                if (path === POST_ROUTE.TRANSFER_RECEIVER) {
+                    return MOCK_SERVER.TRANSFER_RECEIVER;
+                }
+            })
+        // phase4
+
 
         wasm_mock.BSTRequestorData.requester_calc_s = jest.fn((_bst_requestor_data_str, _signature_str) => {
             return JSON.stringify(REQUESTOR_CALC_S)
         })
 
-        //wasm_mock.BSTRequestorData = jest.
         wasm_mock.BSTRequestorData.make_blind_spend_token = jest.fn((_bst_requestor_data_str, _signature_str) => {
             return JSON.stringify(MAKE_BST)
         })
@@ -462,7 +470,6 @@ describe('full swap test 1 - correct swap', () => {
         });
 
         await swapPhaseAll(swap);
-        console.error(statecoin.swap_id);
         expect(statecoin.swap_id).not.toEqual(null);
     });
 });
